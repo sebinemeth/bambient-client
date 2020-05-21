@@ -12,7 +12,7 @@ export default {
 };
 </script>
 
-<style>
+<style> 
 
 .time {
     font-size: 6em;
