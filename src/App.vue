@@ -71,7 +71,7 @@
             <v-list-item-content>
               <div class="d-flex">
                 <v-list-item-title>Location</v-list-item-title>
-                <v-text-field type="number" suffix="s" v-model="config.refreshLocation" ></v-text-field>
+                <v-text-field type="number" suffix="s" v-model="config.refreshLocation"></v-text-field>
               </div>
             </v-list-item-content>
           </v-list-item>
@@ -109,9 +109,9 @@ export default {
       showSecs: false,
       showDate: true,
       dateFormat: null,
-      refreshLocation: 15*60,
-      refreshBKK: [3, 5*60],
-      refreshWeather: 15*60
+      refreshLocation: 15 * 60,
+      refreshBKK: [3, 5 * 60],
+      refreshWeather: 15 * 60
     }
   }),
 
@@ -153,3 +153,19 @@ export default {
   }
 };
 </script>
+
+<style>
+html {
+  overflow: hidden;
+}
+
+.theme--dark.v-application {
+  background: black!important;
+}
+.font-lato {
+  font-family: 'Lato', sans-serif!important;
+}
+.font-alata {
+  font-family: "Alata", sans-serif!important;
+}
+</style>
