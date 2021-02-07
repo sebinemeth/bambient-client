@@ -1,12 +1,19 @@
 <template>
   <div class="bkk">
-      bkk
+    bkk
   </div>
 </template>
 
 <script>
 export default {
   name: "BKK",
-  props: ["config"]
+  props: {
+    config: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+  },
 };
 </script>

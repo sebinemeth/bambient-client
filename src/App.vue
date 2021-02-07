@@ -14,7 +14,9 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">bAmbient</v-list-item-title>
-          <v-list-item-subtitle>A Budapest ambient display</v-list-item-subtitle>
+          <v-list-item-subtitle>
+            A Budapest ambient display
+          </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -71,7 +73,11 @@
             <v-list-item-content>
               <div class="d-flex">
                 <v-list-item-title>Location</v-list-item-title>
-                <v-text-field type="number" suffix="s" v-model="config.refreshLocation"></v-text-field>
+                <v-text-field
+                  v-model="config.refreshLocation"
+                  type="number"
+                  suffix="s"
+                ></v-text-field>
               </div>
             </v-list-item-content>
           </v-list-item>
@@ -111,8 +117,8 @@ export default {
       dateFormat: null,
       refreshLocation: 15 * 60,
       refreshBKK: [3, 5 * 60],
-      refreshWeather: 15 * 60
-    }
+      refreshWeather: 15 * 60,
+    },
   }),
 
   created() {
@@ -149,8 +155,8 @@ export default {
       } else {
         cancelFullScreen.call(doc);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -160,12 +166,12 @@ html {
 }
 
 .theme--dark.v-application {
-  background: black!important;
+  background: black !important;
 }
 .font-lato {
-  font-family: 'Lato', sans-serif!important;
+  font-family: "Lato", sans-serif !important;
 }
 .font-alata {
-  font-family: "Alata", sans-serif!important;
+  font-family: "Alata", sans-serif !important;
 }
 </style>

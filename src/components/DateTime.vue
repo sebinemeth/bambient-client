@@ -8,7 +8,14 @@
 <script>
 export default {
   name: "DateTime",
-  props: ["config"]
+  props: {
+    config: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+  },
 };
 </script>
 
