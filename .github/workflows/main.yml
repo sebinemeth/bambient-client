@@ -38,3 +38,13 @@ jobs:
           args: deploy --only hosting
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+  cleanup:
+    name: Clean up
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove dist Directory
+        uses: JesseTG/rm@v1.0.2
+        with:
+          name: dist
+          path: dist
