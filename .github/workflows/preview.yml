@@ -38,3 +38,13 @@ jobs:
           args: hosting:channel:deploy developer
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+  cleanup:
+    name: Clean up
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove dist Directory
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: dist
+          failOnError: false

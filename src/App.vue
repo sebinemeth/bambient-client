@@ -1,132 +1,41 @@
 <template>
   <v-app>
     <div class="d-flex">
-      <v-btn icon class="ma-3" @click.stop="drawer = !drawer">
-        <v-icon>mdi-cog</v-icon>
-      </v-btn>
+      <!--fullscreen-->
+      <v-dialog
+        v-model="dialog"
+        hide-overlay
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon class="ma-3" v-bind="attrs" v-on="on">
+            <v-icon>mdi-cog</v-icon>
+          </v-btn>
+        </template>
+        <settings @close="dialog = false" />
+      </v-dialog>
       <v-spacer></v-spacer>
       <v-btn icon class="ma-3" @click.stop="toggleFullScreen">
         <v-icon>mdi-fullscreen</v-icon>
       </v-btn>
     </div>
 
-    <v-navigation-drawer v-model="drawer" app absolute temporary>
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title">bAmbient</v-list-item-title>
-          <v-list-item-subtitle>
-            A Budapest ambient display
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list dense>
-        <v-list-group value="true">
-          <template v-slot:activator>
-            <v-list-item-title>General settings</v-list-item-title>
-          </template>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>NoSleep</v-list-item-title>
-                <v-switch v-model="config.enableNoSleep" inset></v-switch>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-
-        <v-list-group>
-          <template v-slot:activator>
-            <v-list-item-title>Time and date settings</v-list-item-title>
-          </template>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Show seconds</v-list-item-title>
-                <v-switch v-model="config.showSecs" inset></v-switch>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Show date</v-list-item-title>
-                <v-switch v-model="config.showDate" inset></v-switch>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Date format</v-list-item-title>
-                <v-select v-model="config.dateFormat" dense></v-select>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-
-        <v-list-group>
-          <template v-slot:activator>
-            <v-list-item-title>Refresh settings</v-list-item-title>
-          </template>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Location</v-list-item-title>
-                <v-text-field
-                  v-model="config.refreshLocation"
-                  type="number"
-                  suffix="s"
-                ></v-text-field>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-
-    <v-content dark>
-      <router-view :config="config" />
-    </v-content>
+    <v-main dark>
+      <router-view />
+    </v-main>
   </v-app>
 </template>
 
 <script>
-// import HelloWorld from './components/HelloWorld';
-
+import Settings from "@/components/Settings.vue";
 export default {
   name: "App",
 
-  components: {},
+  components: { Settings },
 
-  data: () => ({
-    drawer: true,
-    config: {
-      enableNosleep: false,
-      showSecs: false,
-      showDate: true,
-      dateFormat: null,
-      refreshLocation: 15 * 60,
-      refreshBKK: [3, 5 * 60],
-      refreshWeather: 15 * 60,
-    },
-  }),
+  data: () => ({ dialog: false }),
 
   created() {
     this.$vuetify.theme.dark = true;
-  },
-
-  mounted: () => {
-    //this.collapseAppbar = false
   },
 
   methods: {

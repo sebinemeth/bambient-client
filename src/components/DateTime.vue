@@ -1,31 +1,71 @@
 <template>
   <div class="datetime">
-    <div class="time text-center font-alata">12:21</div>
-    <div class="date text-center font-alata">május 21. Cs</div>
+    <div class="time text-center font-alata">
+      {{ timeString
+      }}<span v-if="showSeconds" class="seconds">:{{ secondsString }}</span>
+    </div>
+    <div class="date text-center font-alata">
+      {{ dateString }}
+    </div>
   </div>
 </template>
 
 <script>
+import ConfigMixin from "@/mixins/ConfigMixin";
 export default {
   name: "DateTime",
-  props: {
-    config: {
-      type: Object,
-      default() {
-        return {};
-      },
+  mixins: [ConfigMixin],
+  data: () => ({
+    interval: null,
+    now: new Date(),
+  }),
+  computed: {
+    timeString() {
+      const timeConfig = {
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      return this.now.toLocaleTimeString([], timeConfig);
     },
+    secondsString() {
+      const secs = this.now.getSeconds();
+      return (secs > 9 ? "" : "0") + secs;
+    },
+    dateString() {
+      const dateConfig = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      };
+      return this.now.toLocaleDateString([], dateConfig);
+    },
+  },
+  mounted() {
+    if (this.interval === null)
+      this.interval = window.setInterval(() => {
+        this.now = new Date();
+      }, 500);
+  },
+  beforeDestroy() {
+    window.clearInterval(this.interval);
   },
 };
 </script>
 
-<style> 
-
+<style>
 .time {
-    font-size: 6em;
+  font-size: 6em;
+}
+.seconds {
+  font-size: 0.6em;
+  opacity: 0.5;
+  min-width: 1.8em;
+  margin-left: 0.1em;
+  display: inline-block;
+  text-align: left;
 }
 .date {
-    font-size: 2.2em;
+  font-size: 2.2em;
 }
-
 </style>
