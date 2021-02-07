@@ -1,8 +1,8 @@
-name: Build and Deploy
+name: B&D Preview
 on:
   push:
     branches:
-      - master
+      - developer
 
 jobs:
   build:
@@ -35,6 +35,6 @@ jobs:
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
-          args: deploy --only hosting
+          args: hosting:channel:deploy developer
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
