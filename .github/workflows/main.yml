@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Remove dist Directory
-        uses: JesseTG/rm@v1.0.2
+      - uses: geekyeggo/delete-artifact@v1
         with:
           name: dist
-          path: dist
+          failOnError: false
