@@ -36,12 +36,7 @@
 
         <v-card-actions>
           <small>
-            {{
-              weatherData.refreshed.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            }}
+            {{ refreshTimePassed }}
           </small>
           <v-spacer></v-spacer>
           <v-btn icon x-small @click="fetchWeather">
@@ -62,20 +57,22 @@
 
 <script>
 import StoreMixin from "@/mixins/StoreMixin";
+import NowMixin from "@/mixins/NowMixin";
 import WeatherAlert from "@/components/WeatherAlert";
 export default {
   name: "Weather",
   components: { WeatherAlert },
-  mixins: [StoreMixin],
+  mixins: [StoreMixin, NowMixin],
   data: () => ({
     interval: null,
   }),
   computed: {
     refreshTimePassed() {
-      const diffMillis =
-        new Date().getTime() - this.weatherData.refreshed.getTime();
-      console.log(diffMillis);
-      return diffMillis;
+      const diffMinutes =
+        (this.now - this.weatherData.refreshed.getTime()) / 1000 / 60;
+      return diffMinutes < 1
+        ? "just now"
+        : Math.round(diffMinutes) + " mins ago";
     },
   },
   watch: {

@@ -7,7 +7,7 @@
         </v-list-item-title>
       </v-list-item-content>
       <v-list-item-action class="my-0">
-        <v-btn icon @click="show = !show" small>
+        <v-btn icon small @click="show = !show">
           <v-icon> {{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
         </v-btn>
       </v-list-item-action>
@@ -19,10 +19,8 @@
           {{ alert.description }}
         </small>
         <br />
-        <small
-          >From {{ new Date(alert.start * 1000).toLocaleString() }} to
-          {{ new Date(alert.end * 1000).toLocaleString() }}</small
-        >
+        <small>From {{ new Date(alert.start * 1000).toLocaleString() }} to
+          {{ new Date(alert.end * 1000).toLocaleString() }}</small>
       </div>
     </v-expand-transition>
   </v-alert>

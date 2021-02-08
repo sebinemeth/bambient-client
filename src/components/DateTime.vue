@@ -12,13 +12,11 @@
 
 <script>
 import StoreMixin from "@/mixins/StoreMixin";
+import NowMixin from "@/mixins/NowMixin";
 export default {
   name: "DateTime",
-  mixins: [StoreMixin],
-  data: () => ({
-    interval: null,
-    now: new Date(),
-  }),
+  mixins: [StoreMixin, NowMixin],
+  
   computed: {
     timeString() {
       const hours = this.now.getHours();
@@ -51,15 +49,6 @@ export default {
       };
       return this.now.toLocaleDateString([], dateConfig);
     },
-  },
-  mounted() {
-    if (this.interval === null)
-      this.interval = window.setInterval(() => {
-        this.now = new Date();
-      }, 500);
-  },
-  beforeDestroy() {
-    window.clearInterval(this.interval);
   },
 };
 </script>
