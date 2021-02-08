@@ -2,10 +2,7 @@
   <v-app>
     <div class="d-flex">
       <!--fullscreen-->
-      <v-dialog
-        v-model="dialog"
-        hide-overlay
-      >
+      <v-dialog v-model="dialog" hide-overlay>
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon class="ma-3" v-bind="attrs" v-on="on">
             <v-icon>mdi-cog</v-icon>
@@ -15,7 +12,8 @@
       </v-dialog>
       <v-spacer></v-spacer>
       <v-btn icon class="ma-3" @click.stop="toggleFullScreen">
-        <v-icon>mdi-fullscreen</v-icon>
+        <v-icon v-if="fullScreen">mdi-fullscreen-exit</v-icon>
+        <v-icon v-else>mdi-fullscreen</v-icon>
       </v-btn>
     </div>
 
@@ -32,10 +30,15 @@ export default {
 
   components: { Settings },
 
-  data: () => ({ dialog: false }),
+  data: () => ({ dialog: false, fullScreen: false }),
 
   created() {
     this.$vuetify.theme.dark = true;
+  },
+
+  mounted() {
+    document.onfullscreenchange = () =>
+      (this.fullScreen = !!document.fullscreenElement);
   },
 
   methods: {

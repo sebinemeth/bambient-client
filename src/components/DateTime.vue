@@ -21,6 +21,17 @@ export default {
   }),
   computed: {
     timeString() {
+      const hours = this.now.getHours();
+      const minutes = this.now.getMinutes();
+      return (
+        (hours > 9 ? "" : "0") +
+        hours +
+        ":" +
+        (minutes > 9 ? "" : "0") +
+        minutes
+      );
+
+      // localized version:
       const timeConfig = {
         hour: "2-digit",
         minute: "2-digit",
