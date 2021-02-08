@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex';
 import NoSleep from "nosleep.js/dist/NoSleep.min.js";
-import nosleep from 'nosleep.js';
+import axios from "axios";
 
 Vue.use(Vuex);
 
@@ -16,6 +16,7 @@ const getDefaultState = () => ({
   showSeconds: false,
   noSleep: true,
   weatherInterval: 10,
+  weatherData: { loading: true },
 })
 
 const store = new Vuex.Store({
@@ -33,6 +34,33 @@ const store = new Vuex.Store({
       !!value ? noSleep.enable() : noSleep.disable()
     },
     setWeatherInterval: (state, value) => savedMutation(state, 'weatherInterval', value),
+    setWeatherData: (state, value) => state.weatherData = value,
+  },
+  actions: {
+    async fetchWeather({ state, commit }) {
+      commit('setWeatherData', Object.assign(state.weatherData, { loading: true }));
+
+      const result = await axios.get("https://api.openweathermap.org/data/2.5/onecall", {
+        params: {
+          lat: 47.49801,
+          lon: 19.03991,
+          units: 'metric',
+          lang: 'hu',
+          exclude: 'current',
+          appid: 'ad0b80b4e76cbde73b02026ea375f013',
+        }
+      });
+      const current = await axios.get("https://api.openweathermap.org/data/2.5/weather", {
+        params: {
+          lat: 47.49801,
+          lon: 19.03991,
+          units: 'metric',
+          lang: 'hu',
+          appid: 'ad0b80b4e76cbde73b02026ea375f013',
+        }
+      });
+      commit('setWeatherData', Object.assign(result.data, { current: current.data, refreshed: new Date(current.data.dt*1000), loading: false }));
+    }
   }
 });
 

@@ -8,7 +8,7 @@
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn dark text @click="resetSettings">
-          Reset settings
+          Reset
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
