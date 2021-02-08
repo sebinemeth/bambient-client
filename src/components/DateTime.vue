@@ -11,10 +11,10 @@
 </template>
 
 <script>
-import ConfigMixin from "@/mixins/ConfigMixin";
+import StoreMixin from "@/mixins/StoreMixin";
 export default {
   name: "DateTime",
-  mixins: [ConfigMixin],
+  mixins: [StoreMixin],
   data: () => ({
     interval: null,
     now: new Date(),

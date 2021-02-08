@@ -17,6 +17,7 @@ const getDefaultState = () => ({
   noSleep: true,
   weatherInterval: 10,
   weatherData: { loading: true },
+  location: null,
 })
 
 const store = new Vuex.Store({
@@ -35,31 +36,43 @@ const store = new Vuex.Store({
     },
     setWeatherInterval: (state, value) => savedMutation(state, 'weatherInterval', value),
     setWeatherData: (state, value) => state.weatherData = value,
+    setLocation: (state, value) => state.location = value,
   },
   actions: {
-    async fetchWeather({ state, commit }) {
+    async fetchWeather({ state, commit, dispatch }) {
       commit('setWeatherData', Object.assign(state.weatherData, { loading: true }));
 
+      await dispatch('refreshLocation');
+
+      const config = {
+        lat: state.location.lat,
+        lon: state.location.lon,
+        units: 'metric',
+        lang: 'hu',
+        exclude: 'current',
+        appid: 'ad0b80b4e76cbde73b02026ea375f013',
+      }
+
       const result = await axios.get("https://api.openweathermap.org/data/2.5/onecall", {
-        params: {
-          lat: 47.49801,
-          lon: 19.03991,
-          units: 'metric',
-          lang: 'hu',
-          exclude: 'current',
-          appid: 'ad0b80b4e76cbde73b02026ea375f013',
-        }
+        params: config
       });
       const current = await axios.get("https://api.openweathermap.org/data/2.5/weather", {
-        params: {
-          lat: 47.49801,
-          lon: 19.03991,
-          units: 'metric',
-          lang: 'hu',
-          appid: 'ad0b80b4e76cbde73b02026ea375f013',
-        }
+        params: config
       });
-      commit('setWeatherData', Object.assign(result.data, { current: current.data, refreshed: new Date(current.data.dt*1000), loading: false }));
+      commit('setWeatherData', Object.assign(result.data, { current: current.data, refreshed: new Date(current.data.dt * 1000), loading: false }));
+    },
+    async refreshLocation({ commit }) {
+      if (navigator.geolocation) {
+        try {
+          const result = await new Promise(function (resolve, reject) {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+          commit('setLocation', { lat: result.coords.latitude, lon: result.coords.longitude });
+        } catch (e) {
+          console.error("Location denied, fallback to Budapest");
+          commit('setLocation', { lat: 47.49801, lon: 19.03991 });
+        }
+      }
     }
   }
 });

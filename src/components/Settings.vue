@@ -86,10 +86,10 @@
   </v-card>
 </template>
 <script>
-import ConfigMixin from "@/mixins/ConfigMixin";
+import StoreMixin from "@/mixins/StoreMixin";
 export default {
   name: "Settings",
-  mixins: [ConfigMixin],
+  mixins: [StoreMixin],
   methods: {
     close() {
       this.$emit("close");

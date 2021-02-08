@@ -1,24 +1,7 @@
 <template>
-  <div class="weather my-4" style="width: 380px">
-    <v-alert
-      border="top"
-      colored-border
-      type="error"
-      elevation="2"
-      v-for="(a, i) in weatherData.alerts"
-      v-bind:key="i"
-    >
-      <strong>{{ a.event }}</strong>
-      <br />
-      <small>
-        {{ a.description }}
-      </small>
-      <br />
-      <small
-        >From {{ new Date(a.start*1000).toLocaleString() }} to
-        {{ new Date(a.end*1000).toLocaleString() }}</small
-      >
-    </v-alert>
+  <div class="weather my-4" style="width: min(100%,380px)">
+    <weather-alert v-for="(a, i) in weatherData.alerts" :key="i" :alert="a">
+    </weather-alert>
     <v-card
       class="mx-auto"
       style="width: 100%"
@@ -78,13 +61,23 @@
 </template>
 
 <script>
-import ConfigMixin from "@/mixins/ConfigMixin";
+import StoreMixin from "@/mixins/StoreMixin";
+import WeatherAlert from "@/components/WeatherAlert";
 export default {
   name: "Weather",
-  mixins: [ConfigMixin],
+  components: { WeatherAlert },
+  mixins: [StoreMixin],
   data: () => ({
     interval: null,
   }),
+  computed: {
+    refreshTimePassed() {
+      const diffMillis =
+        new Date().getTime() - this.weatherData.refreshed.getTime();
+      console.log(diffMillis);
+      return diffMillis;
+    },
+  },
   watch: {
     weatherInterval(value) {
       this.setInterval(value);
@@ -92,6 +85,9 @@ export default {
   },
   mounted() {
     this.setInterval(this.weatherInterval);
+  },
+  beforeDestroy() {
+    this.clearInterval();
   },
   methods: {
     setInterval(mins) {
@@ -107,17 +103,6 @@ export default {
       this.fetchWeather();
       console.log("weather refreshed");
     },
-  },
-  computed: {
-    refreshTimePassed() {
-      const diffMillis =
-        new Date().getTime() - this.weatherData.refreshed.getTime();
-      console.log(diffMillis);
-      return diffMillis;
-    },
-  },
-  beforeDestroy() {
-    this.clearInterval();
   },
 };
 </script>
