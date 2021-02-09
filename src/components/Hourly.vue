@@ -12,13 +12,14 @@
           v-slot="{ active, toggle }"
         >
           <v-card
-            :color="active ? 'primary' : 'grey lighten-1'"
+            :color="active ? 'primary' : 'grey darken-3'"
             rounded
             class="mx-1 mt-auto d-flex flex-column align-items-start justify-content-center"
             :class="{
-              'first-of-day': hours[i] === '00',
+              'first-of-day': firstOfDay(i),
             }"
-            :height="heights[i]"
+            :style="`--day: '${day(i)}'`"
+            :min-height="heights[i]"
             width="40"
             @click="toggle"
           >
@@ -32,7 +33,12 @@
         </v-slide-item>
       </v-slide-group>
       <v-expand-transition>
-        <v-card v-if="activeItem != null" rounded class="mt-4" color="grey darken-3">
+        <v-card
+          v-if="activeItem != null"
+          rounded
+          class="mt-2"
+          color="grey darken-3"
+        >
           <v-card-title>
             {{
               new Date(hourlyData[activeItem].dt * 1000).toLocaleDateString(
@@ -52,10 +58,13 @@
           </v-card-title>
           <v-card-subtitle>
             {{
-              new Date(hourlyData[activeItem].dt * 1000).toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })
+              new Date(hourlyData[activeItem].dt * 1000).toLocaleTimeString(
+                [],
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )
             }}
           </v-card-subtitle>
           <v-card-text>
@@ -142,6 +151,41 @@ export default {
       );
     },
   },
-  methods: {},
+  methods: {
+    firstOfDay(i) {
+      if (i == 0) return true;
+      return (
+        new Date(this.hourlyData[i].dt * 1000).getDate() !=
+        new Date(this.hourlyData[i - 1].dt * 1000).getDate()
+      );
+    },
+    day(i) {
+      const now = new Date();
+      const otherDay = new Date(this.hourlyData[i].dt * 1000);
+      const dayDiff = otherDay.getDate() - now.getDate();
+      switch (dayDiff) {
+        case 0:
+          return "Today";
+        case 1:
+          return "Tomorrow";
+        default:
+          return otherDay.toLocaleDateString([], { weekday: "long" });
+      }
+    },
+  },
 };
 </script>
+<style lang="scss" scoped>
+.first-of-day {
+  margin-left: 1.5em !important;
+  &::after {
+    content: var(--day);
+    display: block;
+    position: absolute;
+    bottom: -0.8em;
+    left: -1.6em;
+    transform-origin: 0 0;
+    transform: rotate(-90deg);
+  }
+}
+</style>
