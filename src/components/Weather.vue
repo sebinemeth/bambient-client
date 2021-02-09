@@ -1,6 +1,6 @@
 <template>
   <div class="weather my-4" style="width: min(100%,380px)">
-    <div class="d-flex justify-content-center mb-3">
+    <div class="d-flex justify-center mb-3">
       <weather-alert v-for="(a, i) in weatherData.alerts" :key="i" :alert="a" />
     </div>
     <v-card

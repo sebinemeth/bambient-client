@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-if="dialog" v-model="show" max-width="450" >
+  <v-dialog v-if="dialog" v-model="show" max-width="450">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn icon v-bind="attrs" v-on="on" class="ma-1">
+      <v-btn icon v-bind="attrs" class="ma-1" v-on="on">
         <v-icon color="warning">mdi-alert-circle</v-icon>
       </v-btn>
     </template>
