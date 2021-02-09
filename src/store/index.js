@@ -17,6 +17,8 @@ const getDefaultState = () => ({
   noSleep: true,
   weatherInterval: 10,
   weatherData: { loading: true },
+  bkkCloseStops: [],
+  bkkPreferredStops: [],
   location: null,
 })
 
@@ -39,6 +41,19 @@ const store = new Vuex.Store({
     setLocation: (state, value) => state.location = value,
   },
   actions: {
+    async refreshLocation({ commit }) {
+      if (navigator.geolocation) {
+        try {
+          const result = await new Promise(function (resolve, reject) {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          });
+          commit('setLocation', { lat: result.coords.latitude, lon: result.coords.longitude });
+        } catch (e) {
+          console.error("Location denied, fallback to Budapest");
+          commit('setLocation', { lat: 47.49801, lon: 19.03991 });
+        }
+      }
+    },
     async fetchWeather({ state, commit, dispatch }) {
       commit('setWeatherData', Object.assign(state.weatherData, { loading: true }));
 
@@ -61,19 +76,28 @@ const store = new Vuex.Store({
       });
       commit('setWeatherData', Object.assign(result.data, { current: current.data, refreshed: new Date(current.data.dt * 1000), loading: false }));
     },
-    async refreshLocation({ commit }) {
-      if (navigator.geolocation) {
-        try {
-          const result = await new Promise(function (resolve, reject) {
-            navigator.geolocation.getCurrentPosition(resolve, reject);
-          });
-          commit('setLocation', { lat: result.coords.latitude, lon: result.coords.longitude });
-        } catch (e) {
-          console.error("Location denied, fallback to Budapest");
-          commit('setLocation', { lat: 47.49801, lon: 19.03991 });
-        }
+    async fetchBkkCloseStops({ state, commit, dispatch }) {
+      await dispatch('refreshLocation');
+
+      const config = {
+        key: 'bambient',
+        version: 3,
+        appVersion: 'bambient-0.1',
+        includeReferences: true,
+        lat: state.location.lat,
+        lon: state.location.lon,
+        lonSpan: null,
+        latSpan: null,
+        radius: 100,
+        query: null,
       }
-    }
+
+      const result = await axios.get("https://futar.bkk.hu/api/query/v1/ws/otp/api/where/stops-for-location.json", {
+        params: config
+      });
+      console.log(result)
+      //commit('setBkkCloseStops', result);
+    },
   }
 });
 
