@@ -2,7 +2,7 @@
   <v-app>
     <div class="d-flex">
       <!--fullscreen-->
-      <v-dialog v-model="dialog" hide-overlay>
+      <v-dialog v-model="dialog">
         <template v-slot:activator="{ on, attrs }">
           <v-btn icon class="ma-3" v-bind="attrs" v-on="on">
             <v-icon>mdi-cog</v-icon>
