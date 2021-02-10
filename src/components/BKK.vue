@@ -1,19 +1,19 @@
 <template>
   <div class="bkk" style="width: min(100%,380px)">
     <v-text-field
-      label="Search stops"
-      filled
       v-model="query"
-      @input="search"
+      label="Search stops"
+      solo
       clearable
+      @input="search"
     ></v-text-field>
     <v-card
+      v-for="(stop, i) in bkkCloseStops.list"
+      :key="i"
       class="mx-auto my-2"
       style="width: 100%"
       elevation="2"
       :loading="weatherData.loading"
-      v-for="(stop, i) in bkkCloseStops.list"
-      :key="i"
     >
       <v-list-item>
         <v-list-item-title class="font-alata">
@@ -22,14 +22,15 @@
       </v-list-item>
       <div class="px-3 pb-3">
         <vehicle
-          class="mx-1 mb-2"
           v-for="route in stop.routeIds.map(
             (id) => bkkCloseStops.references.routes[id]
           )"
           :key="route.id"
+          class="mx-1 mb-2"
           :color="route.style.color"
-          >{{ route.shortName }}</vehicle
         >
+          {{ route.shortName }}
+        </vehicle>
       </div>
     </v-card>
   </div>
