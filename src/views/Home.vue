@@ -1,11 +1,19 @@
 <template>
   <v-container class="fill-height">
     <v-row>
-      <v-col cols="12" md="6" class="d-flex flex-column align-center">
+      <v-col
+        cols="12"
+        md="6"
+        class="scroll-col d-flex flex-column align-center"
+      >
         <date-time />
         <weather />
       </v-col>
-      <v-col cols="12" md="6" class="d-flex flex-column align-center">
+      <v-col
+        cols="12"
+        md="6"
+        class="scroll-col d-flex flex-column align-center"
+      >
         <BKK />
       </v-col>
     </v-row>
@@ -23,3 +31,9 @@ export default {
   data: () => ({}),
 };
 </script>
+<style lang="scss" scoped>
+.scroll-col {
+  max-height: 100%;
+  overflow-y: scroll;
+}
+</style>

@@ -73,10 +73,6 @@ export default {
 </script>
 
 <style>
-html {
-  overflow: hidden;
-}
-
 .theme--dark.v-application {
   background: black !important;
 }

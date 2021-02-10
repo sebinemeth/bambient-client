@@ -18,7 +18,7 @@ const getDefaultState = () => ({
   weatherInterval: 10,
   weatherData: { loading: true },
   bkkCloseStops: [],
-  bkkPreferredStops: [],
+  bkkPreferredStops: null,
   location: null,
 })
 
@@ -38,6 +38,7 @@ const store = new Vuex.Store({
     },
     setWeatherInterval: (state, value) => savedMutation(state, 'weatherInterval', value),
     setWeatherData: (state, value) => state.weatherData = value,
+    setBkkCloseStops: (state, value) => state.bkkCloseStops = value,
     setLocation: (state, value) => state.location = value,
   },
   actions: {
@@ -59,7 +60,7 @@ const store = new Vuex.Store({
 
       await dispatch('refreshLocation');
 
-      const config = {
+      const params = {
         lat: state.location.lat,
         lon: state.location.lon,
         units: 'metric',
@@ -69,17 +70,19 @@ const store = new Vuex.Store({
       }
 
       const result = await axios.get("https://api.openweathermap.org/data/2.5/onecall", {
-        params: config
+        params
       });
       const current = await axios.get("https://api.openweathermap.org/data/2.5/weather", {
-        params: config
+        params
       });
       commit('setWeatherData', Object.assign(result.data, { current: current.data, refreshed: new Date(current.data.dt * 1000), loading: false }));
     },
-    async fetchBkkCloseStops({ state, commit, dispatch }) {
+    async fetchBkkCloseStops({ state, commit, dispatch }, query) {
       await dispatch('refreshLocation');
 
-      const config = {
+      const params = {
+        url: "https://futar.bkk.hu/api/query/v1/ws/otp/api/where/stops-for-location.json",
+
         key: 'bambient',
         version: 3,
         appVersion: 'bambient-0.1',
@@ -89,14 +92,14 @@ const store = new Vuex.Store({
         lonSpan: null,
         latSpan: null,
         radius: 100,
-        query: null,
+        limit: 5,
+        query,
       }
 
-      const result = await axios.get("https://futar.bkk.hu/api/query/v1/ws/otp/api/where/stops-for-location.json", {
-        params: config
-      });
-      console.log(result)
-      //commit('setBkkCloseStops', result);
+      const url = "https://web.remetelak.com/proxy/"
+      const result = await axios.get(url, { params });
+
+      commit('setBkkCloseStops', result.data.data);
     },
   }
 });

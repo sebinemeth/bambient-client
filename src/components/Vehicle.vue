@@ -1,5 +1,10 @@
 <template>
-  <v-chip label :color="color" style="width: 60px;" class="justify-center">
+  <v-chip
+    label
+    :color="'#' + color"
+    style="width: 60px;"
+    class="justify-center"
+  >
     <slot></slot>
   </v-chip>
 </template>
@@ -11,14 +16,11 @@ export default {
       type: String,
       default: "bus",
     },
-  },
-  computed: {
-    color() {
-      switch (this.type) {
-        default:
-          return "#009FE3";
-      }
+    color: {
+      type: String,
+      default: "009FE3",
     },
   },
+  computed: {},
 };
 </script>
