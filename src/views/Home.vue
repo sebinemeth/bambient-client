@@ -1,23 +1,15 @@
 <template>
-  <v-container class="fill-height">
-    <v-row>
-      <v-col
-        cols="12"
-        md="6"
-        class="scroll-col d-flex flex-column align-center"
-      >
+  <div class="fill-height">
+    <div class="fill-height d-block d-md-flex align-center">
+      <div class="flex-grow-1 scroll-col d-flex flex-column align-center">
         <date-time />
         <weather />
-      </v-col>
-      <v-col
-        cols="12"
-        md="6"
-        class="scroll-col d-flex flex-column align-center"
-      >
+      </div>
+      <div class="flex-grow-1 scroll-col d-flex flex-column align-center">
         <BKK />
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
