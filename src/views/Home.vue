@@ -1,11 +1,11 @@
 <template>
   <div class="fill-height">
     <div class="fill-height d-block d-md-flex align-center">
-      <div class="flex-grow-1 scroll-col d-flex flex-column align-center">
+      <div class="my-5 mx-3 flex-grow-1 d-flex flex-column align-center">
         <date-time />
         <weather />
       </div>
-      <div class="flex-grow-1 scroll-col d-flex flex-column align-center">
+      <div class="my-5 mx-3 flex-grow-1 d-flex flex-column align-center">
         <BKK />
       </div>
     </div>

@@ -2,6 +2,7 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
+  lintOnSave: true,
   pwa: {
     name: 'bAmbient',
     themeColor: '#4c0e5f',
