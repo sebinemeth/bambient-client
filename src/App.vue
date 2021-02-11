@@ -17,9 +17,9 @@
           <v-icon v-else>mdi-fullscreen</v-icon>
         </v-btn>
       </div>
-      <div :style="{ height }">
-        <router-view />
-      </div>
+      <!--div :style="{ height }"-->
+      <router-view />
+      <!--/div-->
     </v-main>
   </v-app>
 </template>
@@ -88,7 +88,9 @@ html {
 
 .appbar {
   position: absolute;
+  z-index: 15;
   width: 100%;
+  background: linear-gradient(to bottom, black, transparent);
 }
 
 .theme--dark.v-application {

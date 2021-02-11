@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-toolbar dark color="primary">
+    <v-toolbar dark color="accent">
       <v-btn icon dark @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
@@ -14,7 +14,20 @@
     </v-toolbar>
     <v-list subheader>
       <v-subheader>General</v-subheader>
-      <v-list-item>
+      <v-list-item @click="reload">
+        <v-list-item-content>
+          <v-list-item-title>Refresh</v-list-item-title>
+          <v-list-item-subtitle>
+            Refresh to see new content
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn icon @click="reload">
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+      <v-list-item @click="setNoSleep(!noSleep)">
         <v-list-item-action>
           <v-switch
             :input-value="noSleep"
@@ -33,7 +46,7 @@
     <v-divider></v-divider>
     <v-list subheader>
       <v-subheader>Date & Time</v-subheader>
-      <v-list-item>
+      <v-list-item @click="setShowSeconds(!showSeconds)">
         <v-list-item-action>
           <v-switch
             :input-value="showSeconds"
@@ -97,6 +110,9 @@ export default {
     resetSettings() {
       window.localStorage.clear();
       this.$store.commit("resetState");
+    },
+    reload() {
+      window.location.reload(true);
     },
   },
 };

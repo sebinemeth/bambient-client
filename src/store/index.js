@@ -9,7 +9,7 @@ const noSleep = new NoSleep();
 
 const savedMutation = (state, key, value) => {
   state[key] = value;
-  window.localStorage.setItem(key, value);
+  window.localStorage.setItem(key, JSON.stringify(value));
 };
 
 const getDefaultState = () => ({
@@ -18,9 +18,17 @@ const getDefaultState = () => ({
   weatherInterval: 10,
   weatherData: { loading: true },
   bkkCloseStops: [],
-  bkkPreferredStops: null,
+  bkkFavouriteStops: [],
+  bkkDepartures: [],
   location: null,
 })
+
+const bkkParams = {
+  key: 'bambient',
+  version: 3,
+  appVersion: 'bambient-0.1',
+  includeReferences: true,
+}
 
 const store = new Vuex.Store({
   state: getDefaultState(),
@@ -30,16 +38,23 @@ const store = new Vuex.Store({
       if (state.noSleep)
         noSleep.enable();
     },
-
     setShowSeconds: (state, value) => savedMutation(state, 'showSeconds', !!value),
     setNoSleep: (state, value) => {
       savedMutation(state, 'noSleep', !!value)
       !!value ? noSleep.enable() : noSleep.disable()
     },
+    setLocation: (state, value) => state.location = value,
     setWeatherInterval: (state, value) => savedMutation(state, 'weatherInterval', value),
     setWeatherData: (state, value) => state.weatherData = value,
     setBkkCloseStops: (state, value) => state.bkkCloseStops = value,
-    setLocation: (state, value) => state.location = value,
+    setBkkFavouriteStops: (state, value) => state.bkkFavouriteStops = value,
+    setBkkFavouriteStop: (state, value) => {
+      state.bkkFavouriteStops.find(stop => value.id === stop.id) ?
+        state.bkkFavouriteStops.splice(state.bkkFavouriteStops.map(stop => stop.id).indexOf(value.id)) :
+        state.bkkFavouriteStops.push(value);
+      window.localStorage.setItem('bkkFavouriteStops', JSON.stringify(state.bkkFavouriteStops))
+    },
+    setBkkDepartures: (state, value) => state.bkkDepartures = value,
   },
   actions: {
     async refreshLocation({ commit }) {
@@ -82,24 +97,58 @@ const store = new Vuex.Store({
 
       const params = {
         url: "https://futar.bkk.hu/api/query/v1/ws/otp/api/where/stops-for-location.json",
-
-        key: 'bambient',
-        version: 3,
-        appVersion: 'bambient-0.1',
-        includeReferences: true,
+        ...bkkParams,
         lat: state.location.lat,
         lon: state.location.lon,
-        lonSpan: null,
-        latSpan: null,
         radius: 100,
-        limit: 5,
         query,
       }
 
       const url = "https://web.remetelak.com/proxy/"
       const result = await axios.get(url, { params });
 
-      commit('setBkkCloseStops', result.data.data);
+      const bkkCloseStops = result.data.data.list
+      for (const stop of bkkCloseStops) {
+        stop.parentStation = result.data.data.references.stops[stop.parentStationId]
+        stop.routes = stop.routeIds.map(id => result.data.data.references.routes[id])
+      }
+
+      commit('setBkkCloseStops', bkkCloseStops);
+    },
+    async fetchBkkDepartures({ state, commit, dispatch }) {
+      const stops = state.bkkFavouriteStops.length ? state.bkkFavouriteStops : state.bkkCloseStops;
+      if (!stops.length) return
+      await dispatch('refreshLocation');
+
+      const params = {
+        url: "https://futar.bkk.hu/api/query/v1/ws/otp/api/where/arrivals-and-departures-for-stop.json",
+        ...bkkParams,
+        onlyDepartures: true,
+        radius: 100,
+        limit: 60,
+        minutesBefore: 2,
+        minutesAfter: 30,
+      }
+
+
+      const url = "https://web.remetelak.com/proxy/"
+      const requests = stops.map(stop => axios.get(url, { params: { stopId: stop.id, ...params } }));
+      const responses = await Promise.all(requests)
+
+      const datas = responses.map(response => response.data.data)
+      datas.forEach(data => {
+        data.entry.stop = data.references.stops[data.entry.stopId]
+        data.entry.alerts = data.entry.alertIds.map(id => data.references.alerts[id])
+        data.entry.routes = data.entry.routeIds.map(id => data.references.routes[id])
+        data.entry.nearbyStops = data.entry.nearbyStopIds.map(id => data.references.stops[id])
+        data.entry.stopTimes.forEach(stopTime => {
+          stopTime.trip = data.references.trips[stopTime.tripId];
+          stopTime.trip.route = data.references.routes[stopTime.trip.routeId];
+        })
+      })
+      const bkkDepartures = responses.map(response => response.data.data.entry)
+
+      commit('setBkkDepartures', bkkDepartures);
     },
   }
 });

@@ -1,14 +1,18 @@
 <template>
-  <div class="fill-height">
-    <div class="fill-height d-block d-md-flex align-center">
-      <div class="my-5 mx-3 flex-grow-1 d-flex flex-column align-center">
-        <date-time />
-        <weather />
-      </div>
-      <div class="my-5 mx-3 flex-grow-1 d-flex flex-column align-center">
-        <BKK />
-      </div>
-    </div>
+  <div class="fill-height pa-1">
+    <v-row class="fill-height">
+      <v-col cols="12" md="6" class="d-flex justify-center align-center">
+        <div class="ma-5" style="width: 100%">
+          <date-time />
+          <weather />
+        </div>
+      </v-col>
+      <v-col cols="12" md="6" class="d-flex justify-center align-center">
+        <div class="ma-5" style="width: 100%">
+          <BKK />
+        </div>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -23,9 +27,4 @@ export default {
   data: () => ({}),
 };
 </script>
-<style lang="scss" scoped>
-.scroll-col {
-  max-height: 100%;
-  overflow-y: scroll;
-}
-</style>
+<style lang="scss" scoped></style>

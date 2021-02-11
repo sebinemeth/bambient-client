@@ -100,6 +100,9 @@
             </v-simple-table>
           </v-card-text>
           <v-card-actions>
+            <v-btn icon :disabled="activeItem === 0" @click="activeItem = 0">
+              <v-icon>mdi-chevron-double-left</v-icon>
+            </v-btn>
             <v-btn icon :disabled="activeItem === 0" @click="activeItem--">
               <v-icon>mdi-chevron-left</v-icon>
             </v-btn>
@@ -110,6 +113,13 @@
               @click="activeItem++"
             >
               <v-icon>mdi-chevron-right</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              :disabled="activeItem === hourlyData.length - 1"
+              @click="activeItem = hourlyData.length - 1"
+            >
+              <v-icon>mdi-chevron-double-right</v-icon>
             </v-btn>
           </v-card-actions>
         </v-card>

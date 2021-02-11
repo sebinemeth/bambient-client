@@ -1,13 +1,13 @@
 <template>
-  <div class="weather my-4" style="width: min(100%,380px)">
+  <div class="weather my-4 mx-auto" style="max-width: 350px">
     <div class="d-flex justify-center mb-3">
       <weather-alert v-for="(a, i) in weatherData.alerts" :key="i" :alert="a" />
     </div>
     <v-card
-      class="mx-auto"
       style="width: 100%"
       elevation="2"
       :loading="weatherData.loading"
+      @click="forecastDialog = true"
     >
       <template v-if="weatherData.current">
         <v-list-item>
@@ -59,7 +59,7 @@
           </v-btn>
         </template>
         <v-card>
-          <v-toolbar dark color="primary">
+          <v-toolbar dark color="accent">
             <v-btn icon dark @click="forecastDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
