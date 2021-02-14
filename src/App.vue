@@ -3,7 +3,7 @@
     <v-main dark>
       <div class="d-flex appbar">
         <!--fullscreen-->
-        <v-dialog v-model="dialog">
+        <v-dialog v-model="dialog" max-width="600">
           <template v-slot:activator="{ on, attrs }">
             <v-btn icon class="ma-3" v-bind="attrs" v-on="on">
               <v-icon>mdi-cog</v-icon>

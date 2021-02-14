@@ -28,38 +28,30 @@
         </v-list-item-action>
       </v-list-item>
       <v-list-item @click="setNoSleep(!noSleep)">
-        <v-list-item-action>
-          <v-switch
-            :input-value="noSleep"
-            inset
-            @change="setNoSleep"
-          ></v-switch>
-        </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>NoSleep</v-list-item-title>
           <v-list-item-subtitle>
             Prevent device from turning off screen
           </v-list-item-subtitle>
         </v-list-item-content>
+        <v-list-item-action>
+          <v-switch :input-value="noSleep" inset></v-switch>
+        </v-list-item-action>
       </v-list-item>
     </v-list>
     <v-divider></v-divider>
     <v-list subheader>
       <v-subheader>Date & Time</v-subheader>
       <v-list-item @click="setShowSeconds(!showSeconds)">
-        <v-list-item-action>
-          <v-switch
-            :input-value="showSeconds"
-            inset
-            @change="setShowSeconds"
-          ></v-switch>
-        </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Show seconds</v-list-item-title>
           <v-list-item-subtitle>
             Display the seconds along with hours and minutes
           </v-list-item-subtitle>
         </v-list-item-content>
+        <v-list-item-action>
+          <v-switch :input-value="showSeconds" inset></v-switch>
+        </v-list-item-action>
       </v-list-item>
     </v-list>
     <v-divider></v-divider>
