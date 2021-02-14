@@ -2,7 +2,9 @@ module.exports = {
   "transpileDependencies": [
     "vuetify"
   ],
+
   lintOnSave: true,
+
   pwa: {
     name: 'bAmbient',
     themeColor: '#4c0e5f',
@@ -26,6 +28,15 @@ module.exports = {
     workboxOptions: {
       skipWaiting: true,
       clientsClaim: true,
+    }
+  },
+
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: false
     }
   }
 }
