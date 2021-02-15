@@ -18,6 +18,8 @@ const getDefaultState = () => ({
   noSleep: true,
   weatherInterval: 10,
   weatherData: { loading: true },
+  bkkDeparturesLoading: false,
+  bkkStopsLoading: false,
   bkkCloseStops: [],
   bkkFavouriteStops: [],
   bkkDepartures: [],
@@ -47,11 +49,13 @@ const store = new Vuex.Store({
     setLocation: (state, value) => state.location = value,
     setWeatherInterval: (state, value) => savedMutation(state, 'weatherInterval', value),
     setWeatherData: (state, value) => state.weatherData = value,
+    setBkkDeparturesLoading: (state, value) => state.bkkDeparturesLoading = value,
+    setBkkStopsLoading: (state, value) => state.bkkStopsLoading = value,
     setBkkCloseStops: (state, value) => state.bkkCloseStops = value,
     setBkkFavouriteStops: (state, value) => state.bkkFavouriteStops = value,
     setBkkFavouriteStop: (state, value) => {
       state.bkkFavouriteStops.find(stop => value.id === stop.id) ?
-        state.bkkFavouriteStops.splice(state.bkkFavouriteStops.map(stop => stop.id).indexOf(value.id)) :
+        state.bkkFavouriteStops.splice(state.bkkFavouriteStops.map(stop => stop.id).indexOf(value.id), 1) :
         state.bkkFavouriteStops.push(value);
       window.localStorage.setItem('bkkFavouriteStops', JSON.stringify(state.bkkFavouriteStops))
     },
@@ -76,7 +80,6 @@ const store = new Vuex.Store({
 
       await dispatch('refreshLocation');
 
-      console.log(i18n.locale)
       const params = {
         lat: state.location.lat,
         lon: state.location.lon,
@@ -95,6 +98,8 @@ const store = new Vuex.Store({
       commit('setWeatherData', Object.assign(result.data, { current: current.data, refreshed: new Date(current.data.dt * 1000), loading: false }));
     },
     async fetchBkkCloseStops({ state, commit, dispatch }, query) {
+      console.log("stops", query)
+      commit('setBkkStopsLoading', true);
       await dispatch('refreshLocation');
 
       const params = {
@@ -116,8 +121,10 @@ const store = new Vuex.Store({
       }
 
       commit('setBkkCloseStops', bkkCloseStops);
+      commit('setBkkStopsLoading', false);
     },
     async fetchBkkDepartures({ state, commit, dispatch }) {
+      commit('setBkkDeparturesLoading', true);
       const stops = state.bkkFavouriteStops.length ? state.bkkFavouriteStops : state.bkkCloseStops;
       if (!stops.length) return
       await dispatch('refreshLocation');
@@ -151,6 +158,7 @@ const store = new Vuex.Store({
       const bkkDepartures = responses.map(response => response.data.data.entry)
 
       commit('setBkkDepartures', bkkDepartures);
+      commit('setBkkDeparturesLoading', false);
     },
   }
 });
