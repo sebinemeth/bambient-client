@@ -14,6 +14,48 @@
     </v-toolbar>
     <v-list subheader>
       <v-subheader>General</v-subheader>
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title>Language</v-list-item-title>
+          <v-list-item-subtitle>
+            Change the language of the app
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <!--v-select
+            v-model="$i18n.locale"
+            dense
+            solo
+            :items="
+              $i18n.availableLocales.map((locale) => ({
+                locale,
+                text: $t(`locale-${locale}`),
+              }))
+            "
+            item-text="text"
+            item-value="locale"
+          ></v-select-->
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn text color="primary" v-bind="attrs" v-on="on">
+                {{ $i18n.locale }}
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="item in $i18n.availableLocales.map((locale) => ({
+                  locale,
+                  text: $t(`locale-${locale}`),
+                }))"
+                :key="item.locale"
+                @click="$i18n.locale = item.locale"
+              >
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-list-item-action>
+      </v-list-item>
       <v-list-item @click="reload">
         <v-list-item-content>
           <v-list-item-title>Refresh</v-list-item-title>
