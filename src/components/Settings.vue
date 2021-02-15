@@ -4,19 +4,19 @@
       <v-btn icon dark @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
-      <v-toolbar-title>Settings</v-toolbar-title>
+      <v-toolbar-title>{{ $t('settings') }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn dark text @click="resetSettings">
-          Reset
+          {{ $t('reset') }}
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-list subheader>
-      <v-subheader>General</v-subheader>
+      <v-subheader>{{ $t('general') }}</v-subheader>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title>Language</v-list-item-title>
+          <v-list-item-title>{{ $t('language') }}</v-list-item-title>
           <v-list-item-subtitle>
             Change the language of the app
           </v-list-item-subtitle>
@@ -50,7 +50,11 @@
                 :key="item.locale"
                 @click="$i18n.locale = item.locale"
               >
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
+                <v-list-item-title
+                  :class="{ 'primary--text': item.locale === $i18n.locale }"
+                >
+                  {{ item.text }}
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -83,7 +87,7 @@
     </v-list>
     <v-divider></v-divider>
     <v-list subheader>
-      <v-subheader>Date & Time</v-subheader>
+      <v-subheader>{{ $t('date-and-time') }}</v-subheader>
       <v-list-item @click="setShowSeconds(!showSeconds)">
         <v-list-item-content>
           <v-list-item-title>Show seconds</v-list-item-title>
@@ -98,7 +102,7 @@
     </v-list>
     <v-divider></v-divider>
     <v-list subheader>
-      <v-subheader>Weather</v-subheader>
+      <v-subheader>{{ $t('weather') }}</v-subheader>
       <v-list-item>
         <v-slider
           label="Refresh interval"

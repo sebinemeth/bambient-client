@@ -29,7 +29,7 @@
               new Date(
                 (stopTime.predictedDepartureTime || stopTime.departureTime) *
                   1000
-              ).toLocaleTimeString()
+              ).toLocaleTimeString($i18n.locale)
             }}</span>
           </div>
         </v-card-text>

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex';
 import NoSleep from "nosleep.js/dist/NoSleep.min.js";
 import axios from "axios";
+import i18n from '@/i18n'
 
 Vue.use(Vuex);
 
@@ -75,11 +76,12 @@ const store = new Vuex.Store({
 
       await dispatch('refreshLocation');
 
+      console.log(i18n.locale)
       const params = {
         lat: state.location.lat,
         lon: state.location.lon,
         units: 'metric',
-        lang: 'hu',
+        lang: i18n.locale,
         exclude: 'current',
         appid: 'ad0b80b4e76cbde73b02026ea375f013',
       }

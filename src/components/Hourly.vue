@@ -42,7 +42,7 @@
           <v-card-title>
             {{
               new Date(hourlyData[activeItem].dt * 1000).toLocaleDateString(
-                [],
+                this.$i18n.locale,
                 {
                   weekday: "short",
                   year: "numeric",
@@ -59,7 +59,7 @@
           <v-card-subtitle>
             {{
               new Date(hourlyData[activeItem].dt * 1000).toLocaleTimeString(
-                [],
+                this.$i18n.locale,
                 {
                   hour: "2-digit",
                   minute: "2-digit",
@@ -155,7 +155,7 @@ export default {
     },
     hours() {
       return this.hourlyData.map((hour) =>
-        new Date(hour.dt * 1000).toLocaleTimeString([], {
+        new Date(hour.dt * 1000).toLocaleTimeString(this.$i18n.locale, {
           hour: "2-digit",
         })
       );
@@ -179,7 +179,7 @@ export default {
         case 1:
           return "Tomorrow";
         default:
-          return otherDay.toLocaleDateString([], { weekday: "long" });
+          return otherDay.toLocaleDateString(this.$i18n.locale, { weekday: "long" });
       }
     },
   },

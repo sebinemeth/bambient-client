@@ -34,7 +34,7 @@ export default {
         hour: "2-digit",
         minute: "2-digit",
       };
-      return this.now.toLocaleTimeString([], timeConfig);
+      return this.now.toLocaleTimeString(this.$i18n.locale, timeConfig);
     },
     secondsString() {
       const secs = this.now.getSeconds();
@@ -47,7 +47,7 @@ export default {
         month: "short",
         day: "numeric",
       };
-      return this.now.toLocaleDateString([], dateConfig);
+      return this.now.toLocaleDateString(this.$i18n.locale, dateConfig);
     },
   },
 };

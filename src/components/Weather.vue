@@ -104,12 +104,12 @@ export default {
         (this.now - this.weatherData.refreshed.getTime()) / 1000 / 60;
       return diffMinutes < 1
         ? "just now"
-        : Math.round(diffMinutes) + " mins ago";
+        : this.$t("n-minutes-ago", { n: Math.round(diffMinutes) });
     },
     dailyData() {
       return {
         labels: this.weatherData.daily.map((entry) =>
-          new Date(entry.dt * 1000).toLocaleDateString()
+          new Date(entry.dt * 1000).toLocaleDateString(this.$i18n.locale)
         ),
         datasets: [
           {
@@ -136,8 +136,14 @@ export default {
         ],
       };
     },
+    locale() {
+      return this.$i18n.locale;
+    },
   },
   watch: {
+    locale(oldVal, newVal) {
+      if (oldVal !== newVal) this.setInterval(this.weatherInterval);
+    },
     weatherInterval(value) {
       this.setInterval(value);
     },
