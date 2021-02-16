@@ -19,6 +19,7 @@ const getDefaultState = () => ({
   weatherInterval: 10,
   weatherData: { loading: true },
   bkkDeparturesLoading: false,
+  bkkDeparturesRefreshed: null,
   bkkStopsLoading: false,
   bkkCloseStops: [],
   bkkFavouriteStops: [],
@@ -50,6 +51,7 @@ const store = new Vuex.Store({
     setWeatherInterval: (state, value) => savedMutation(state, 'weatherInterval', value),
     setWeatherData: (state, value) => state.weatherData = value,
     setBkkDeparturesLoading: (state, value) => state.bkkDeparturesLoading = value,
+    setBkkDeparturesRefreshed: (state, value) => state.bkkDeparturesRefreshed = value,
     setBkkStopsLoading: (state, value) => state.bkkStopsLoading = value,
     setBkkCloseStops: (state, value) => state.bkkCloseStops = value,
     setBkkFavouriteStops: (state, value) => state.bkkFavouriteStops = value,
@@ -156,8 +158,8 @@ const store = new Vuex.Store({
         })
       })
       const bkkDepartures = responses.map(response => response.data.data.entry)
-
       commit('setBkkDepartures', bkkDepartures);
+      commit('setBkkDeparturesRefreshed', new Date());
       commit('setBkkDeparturesLoading', false);
     },
   }

@@ -6,17 +6,19 @@
           v-for="stop in bkkFavouriteStops"
           :key="stop.id"
           color="black"
-          class="mb-3 px-3"
+          class="mb-3"
         >
-          <v-list-item-content>
-            <v-list-item-title>{{ stop.name }}</v-list-item-title>
-            <v-list-item-subtitle>{{ stop.name }}</v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon @click="removeStop(stop)">
-              <v-icon>mdi-map-marker-remove</v-icon>
-            </v-btn>
-          </v-list-item-action>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ stop.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ stop.name }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn icon @click="removeStop(stop)">
+                <v-icon>mdi-map-marker-remove</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
         </v-card>
         <v-autocomplete
           v-model="stopToAdd"

@@ -1,11 +1,12 @@
 {
-    "locale-en": "English",
-    "locale-hu": "Hungarian",
-    "settings": "Settings",
-    "reset": "Reset",
-    "general": "General",
-    "language": "Language",
-    "date-and-time": "Date & Time",
-    "weather": "Weather",
-    "n-minutes-ago": "{n} minutes ago"
+  "locale-en": "English",
+  "locale-hu": "Hungarian",
+  "settings": "Settings",
+  "reset": "Reset",
+  "general": "General",
+  "language": "Language",
+  "date-and-time": "Date & Time",
+  "weather": "Weather",
+  "n-minutes-ago": "{n} minutes ago",
+  "now": "now"
 }

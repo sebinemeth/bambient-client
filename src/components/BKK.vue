@@ -4,7 +4,7 @@
       v-for="(station, key) in departuresByStation"
       :key="key"
       elevation="2"
-      class="mb-3 pb-3"
+      class="station pb-3"
       :loading="bkkDeparturesLoading"
     >
       <v-card-title>{{ station[0].stop.name }}</v-card-title>
@@ -15,30 +15,29 @@
         class="stop mx-3"
       >
         <v-card-text>
-          <div
+          <stop-time
             v-for="(stopTime, i) in stop.stopTimes.slice(0, 5)"
             :key="i"
-            class="stopTime d-flex align-center"
-          >
-            <vehicle class="mr-2" :color="stopTime.trip.route.style.color">
-              {{ stopTime.trip.route.shortName }} </vehicle
-            >{{ stopTime.trip.tripHeadsign }}
-            <span
-              class="ml-auto"
-              :class="{ 'success--text': !!stopTime.predictedDepartureTime }"
-              >{{
-                new Date(
-                  (stopTime.predictedDepartureTime || stopTime.departureTime) *
-                    1000
-                ).toLocaleTimeString($i18n.locale)
-              }}</span
-            >
-          </div>
+            :stop-time="stopTime"
+          />
         </v-card-text>
       </v-card>
     </v-card>
 
-    <div class="d-flex justify-end">
+    <v-card-actions>
+      <v-btn
+        icon
+        x-small
+        class="mr-2"
+        :loading="bkkDeparturesLoading"
+        @click="fetchBkkDepartures"
+      >
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+      <small>
+        {{ refreshTimePassed }}
+      </small>
+      <v-spacer></v-spacer>
       <v-dialog v-model="stopDialog" max-width="600">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
@@ -55,21 +54,22 @@
           <BKKStopPicker />
         </v-card>
       </v-dialog>
-    </div>
+    </v-card-actions>
   </div>
 </template>
 
 <script>
 import StoreMixin from "@/mixins/StoreMixin";
-import Vehicle from "./Vehicle.vue";
+import NowMixin from "@/mixins/NowMixin";
+import StopTime from "./StopTime.vue";
 import BKKStopPicker from "./BKKStopPicker.vue";
 
 export default {
   name: "BKK",
-  components: { Vehicle, BKKStopPicker },
-  mixins: [StoreMixin],
+  components: { StopTime, BKKStopPicker },
+  mixins: [StoreMixin, NowMixin],
   props: {},
-  data: () => ({ query: null, stopDialog: false }),
+  data: () => ({ query: null, stopDialog: false, refreshTimeout: null }),
   computed: {
     stops() {
       return this.bkkFavouriteStops.length
@@ -84,23 +84,42 @@ export default {
         return accumulator;
       }, {});
     },
+    refreshTimePassed() {
+      if (!this.bkkDeparturesRefreshed) return "";
+      const diffMinutes =
+        (this.now - this.bkkDeparturesRefreshed.getTime()) / 1000 / 60;
+      return diffMinutes < 1
+        ? "just now"
+        : this.$t("n-minutes-ago", { n: Math.round(diffMinutes) });
+    },
   },
-  mounted() {
-    this.fetchBkkDepartures();
-  },
-  methods: {},
   watch: {
     bkkFavouriteStops() {
       this.fetchBkkDepartures();
     },
+    bkkDepartures() {
+      const prevTimeout = this.refreshTimeout;
+      if (this.refreshTimeout) window.clearTimeout(this.refreshTimeout);
+      this.refreshTimeout = window.setTimeout(
+        this.fetchBkkDepartures,
+        5 * 60 * 1000
+      );
+      console.log(prevTimeout, this.refreshTimeout);
+    },
   },
+  async mounted() {
+    if (!this.stops.length) await this.fetchBkkCloseStops();
+    this.fetchBkkDepartures();
+  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
-.stopTime + .stopTime {
-  margin-top: 16px;
-}
-.stop + .stop {
-  margin-top: 16px;
+.station,
+.stop,
+.stopTime {
+  & + & {
+    margin-top: 16px;
+  }
 }
 </style>

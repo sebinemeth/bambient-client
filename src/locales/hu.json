@@ -1,11 +1,12 @@
 {
-    "locale-en": "Angol",
-    "locale-hu": "Magyar",
-    "settings": "Beállítások",
-    "reset": "Visszaállítás",
-    "general": "Általános",
-    "language": "Nyelv",
-    "date-and-time": "Dátum és idő",
-    "weather": "Időjárás",
-    "n-minutes-ago": "{n} perce"
+  "locale-en": "Angol",
+  "locale-hu": "Magyar",
+  "settings": "Beállítások",
+  "reset": "Visszaállítás",
+  "general": "Általános",
+  "language": "Nyelv",
+  "date-and-time": "Dátum és idő",
+  "weather": "Időjárás",
+  "n-minutes-ago": "{n} perce",
+  "now": "most"
 }

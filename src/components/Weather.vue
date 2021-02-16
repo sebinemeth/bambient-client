@@ -44,7 +44,13 @@
       </template>
     </v-card>
     <v-card-actions v-if="weatherData.current">
-      <v-btn icon x-small class="mr-2" @click="fetchWeather">
+      <v-btn
+        icon
+        x-small
+        class="mr-2"
+        :loading="weatherData.loading"
+        @click="fetchWeather"
+      >
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
       <small>
