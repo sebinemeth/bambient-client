@@ -38,7 +38,7 @@
       <template v-else>
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Loading weather...</v-list-item-title>
+            <v-list-item-title></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
@@ -61,7 +61,7 @@
       <v-dialog v-model="forecastDialog">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
-            Forecast
+            {{$t('forecast')}}
           </v-btn>
         </template>
         <v-card>
@@ -69,7 +69,7 @@
             <v-btn icon dark @click="forecastDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>Forecast</v-toolbar-title>
+            <v-toolbar-title>{{$t('forecast')}}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn icon :loading="weatherData.loading" @click="fetchWeather">
@@ -109,7 +109,7 @@ export default {
       const diffMinutes =
         (this.now - this.weatherData.refreshed.getTime()) / 1000 / 60;
       return diffMinutes < 1
-        ? "just now"
+        ? this.$t('just-now')
         : this.$t("n-minutes-ago", { n: Math.round(diffMinutes) });
     },
     dailyData() {
