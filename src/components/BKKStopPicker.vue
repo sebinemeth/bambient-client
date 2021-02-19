@@ -21,8 +21,8 @@
           </v-list-item>
         </v-card>
         <v-autocomplete
-          :disabled="bkkFavouriteStops.length >= 3"
           v-model="stopToAdd"
+          :disabled="bkkFavouriteStops.length >= 3"
           :loading="bkkStopsLoading"
           :items="groupedStops"
           chips
