@@ -127,7 +127,7 @@ const store = new Vuex.Store({
     },
     async fetchBkkDepartures({ state, commit, dispatch }) {
       commit('setBkkDeparturesLoading', true);
-      const stops = state.bkkFavouriteStops.length ? state.bkkFavouriteStops : state.bkkCloseStops;
+      const stops = state.bkkFavouriteStops.length ? state.bkkFavouriteStops : state.bkkCloseStops.slice(0,3);
       if (!stops.length) return
       await dispatch('refreshLocation');
 

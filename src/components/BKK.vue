@@ -41,7 +41,7 @@
       <v-dialog v-model="stopDialog" max-width="600">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
-            {{$t('edit-stops')}}
+            {{ $t('edit-stops') }}
           </v-btn>
         </template>
         <v-card>
@@ -49,7 +49,7 @@
             <v-btn icon dark @click="stopDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{$t('edit-stops')}}</v-toolbar-title>
+            <v-toolbar-title>{{ $t('edit-stops') }}</v-toolbar-title>
           </v-toolbar>
           <BKKStopPicker />
         </v-card>

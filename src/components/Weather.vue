@@ -61,7 +61,7 @@
       <v-dialog v-model="forecastDialog">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
-            {{$t('forecast')}}
+            {{ $t('forecast') }}
           </v-btn>
         </template>
         <v-card>
@@ -69,7 +69,7 @@
             <v-btn icon dark @click="forecastDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{$t('forecast')}}</v-toolbar-title>
+            <v-toolbar-title>{{ $t('forecast') }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn icon :loading="weatherData.loading" @click="fetchWeather">
