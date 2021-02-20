@@ -1,5 +1,5 @@
 <template>
-  <div class="bkk fill-height">
+  <div class="bkk">
     <v-card
       v-for="(station, key) in departuresByStation"
       :key="key"

@@ -82,12 +82,9 @@ export default {
 </script>
 
 <style>
-html {
-  overflow: hidden;
-}
 
 .appbar {
-  position: absolute;
+  position: fixed;
   z-index: 15;
   width: 100%;
   background: linear-gradient(to bottom, black, transparent);
