@@ -20,6 +20,7 @@ const getDefaultState = () => ({
   weatherData: { loading: true },
   bkkDeparturesLoading: false,
   bkkDeparturesRefreshed: null,
+  bkkNextRefresh: 0,
   bkkStopsLoading: false,
   bkkCloseStops: [],
   bkkFavouriteStops: [],
@@ -52,6 +53,7 @@ const store = new Vuex.Store({
     setWeatherData: (state, value) => state.weatherData = value,
     setBkkDeparturesLoading: (state, value) => state.bkkDeparturesLoading = value,
     setBkkDeparturesRefreshed: (state, value) => state.bkkDeparturesRefreshed = value,
+    setBkkNextRefresh: (state, value) => state.bkkNextRefresh = value,
     setBkkStopsLoading: (state, value) => state.bkkStopsLoading = value,
     setBkkCloseStops: (state, value) => state.bkkCloseStops = value,
     setBkkFavouriteStops: (state, value) => state.bkkFavouriteStops = value,
@@ -127,7 +129,7 @@ const store = new Vuex.Store({
     },
     async fetchBkkDepartures({ state, commit, dispatch }) {
       commit('setBkkDeparturesLoading', true);
-      const stops = state.bkkFavouriteStops.length ? state.bkkFavouriteStops : state.bkkCloseStops.slice(0,3);
+      const stops = state.bkkFavouriteStops.length ? state.bkkFavouriteStops : state.bkkCloseStops.slice(0, 3);
       if (!stops.length) return
       await dispatch('refreshLocation');
 
@@ -158,8 +160,15 @@ const store = new Vuex.Store({
         })
       })
       const bkkDepartures = responses.map(response => response.data.data.entry)
+
+      const now = new Date();
+      const minDiffSeconds = bkkDepartures.reduce((min, dep) => min = Math.min(dep.stopTimes.reduce((min, stopTime) => Math.min(Math.abs(now.getTime() / 1000 - (stopTime.predictedDepartureTime || stopTime.departureTime)), min), Infinity), min), Infinity);
+
+      const nextRefresh = Math.min(Math.max(minDiffSeconds / 5, 3), 300) * 1000;
+
       commit('setBkkDepartures', bkkDepartures);
-      commit('setBkkDeparturesRefreshed', new Date());
+      commit('setBkkDeparturesRefreshed', now);
+      commit('setBkkNextRefresh', nextRefresh);
       commit('setBkkDeparturesLoading', false);
     },
   }

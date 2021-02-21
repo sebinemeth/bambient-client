@@ -41,7 +41,7 @@
       <v-dialog v-model="stopDialog" max-width="600">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
-            {{ $t('edit-stops') }}
+            {{ $t("edit-stops") }}
           </v-btn>
         </template>
         <v-card>
@@ -49,7 +49,7 @@
             <v-btn icon dark @click="stopDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>{{ $t('edit-stops') }}</v-toolbar-title>
+            <v-toolbar-title>{{ $t("edit-stops") }}</v-toolbar-title>
           </v-toolbar>
           <BKKStopPicker />
         </v-card>
@@ -69,7 +69,12 @@ export default {
   components: { StopTime, BKKStopPicker },
   mixins: [StoreMixin, NowMixin],
   props: {},
-  data: () => ({ query: null, stopDialog: false, refreshTimeout: null }),
+  data: () => ({
+    query: null,
+    stopDialog: false,
+    refreshTimeout: null,
+    nextRefresh: new Date(),
+  }),
   computed: {
     stops() {
       return this.bkkFavouriteStops.length
@@ -89,7 +94,7 @@ export default {
       const diffMinutes =
         (this.now - this.bkkDeparturesRefreshed.getTime()) / 1000 / 60;
       return diffMinutes < 1
-        ? this.$t('just-now')
+        ? this.$t("just-now")
         : this.$t("n-minutes-ago", { n: Math.round(diffMinutes) });
     },
   },
@@ -98,13 +103,13 @@ export default {
       this.fetchBkkDepartures();
     },
     bkkDepartures() {
-      const prevTimeout = this.refreshTimeout;
       if (this.refreshTimeout) window.clearTimeout(this.refreshTimeout);
+      console.log(this.bkkNextRefresh);
+      this.nextRefresh = new Date(Date.now() + Math.round(this.bkkNextRefresh));
       this.refreshTimeout = window.setTimeout(
         this.fetchBkkDepartures,
-        5 * 60 * 1000
+        this.bkkNextRefresh
       );
-      console.log(prevTimeout, this.refreshTimeout);
     },
   },
   async mounted() {
