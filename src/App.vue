@@ -82,7 +82,6 @@ export default {
 </script>
 
 <style>
-
 .appbar {
   position: fixed;
   z-index: 15;
@@ -93,6 +92,11 @@ export default {
 .theme--dark.v-application {
   background: black !important;
 }
+
+.v-pagination__navigation, .v-pagination__item:not(.v-pagination__item--active) {
+  box-shadow: none !important;
+}
+
 .font-lato {
   font-family: "Lato", sans-serif !important;
 }

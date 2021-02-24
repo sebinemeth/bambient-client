@@ -1,29 +1,74 @@
 <template>
   <div>
-    <v-form>
-      <v-container>
-        <v-card
+    <v-container>
+      <v-list subheader>
+        <v-subheader>
+          Favourite stops ({{ bkkFavouriteStops.length }}/3)
+        </v-subheader>
+        <stop-item
           v-for="stop in bkkFavouriteStops"
-          :key="stop.id"
-          color="black"
-          class="mb-3"
+          :key="'fav:' + stop.id"
+          :stop="stop"
         >
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>{{ stop.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ stop.name }}</v-list-item-subtitle>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn icon @click="removeStop(stop)">
-                <v-icon>mdi-map-marker-remove</v-icon>
+          <v-btn slot="action" icon @click="removeStop(stop)">
+            <v-icon>mdi-bookmark</v-icon>
+          </v-btn>
+        </stop-item>
+        <v-subheader>
+          Close stops
+        </v-subheader>
+        <stop-item
+          v-for="stop in bkkCloseStops"
+          :key="'close:' + stop.id"
+          :stop="stop"
+        >
+          <v-btn
+            v-if="bkkFavouriteStops.find((s) => s.id === stop.id)"
+            slot="action"
+            icon
+            @click="removeStop(stop)"
+          >
+            <v-icon>mdi-bookmark</v-icon>
+          </v-btn>
+          <v-btn v-else slot="action" icon @click="changeFavourite(stop)">
+            <v-icon>mdi-bookmark-outline</v-icon>
+          </v-btn>
+        </stop-item>
+        <v-list-item>
+          <v-text-field
+            prepend-inner-icon="mdi-magnify"
+            :placeholder="'Search by name'"
+            clearable
+            v-model="query"
+            :hint="'Type at least 4 characters to search'"
+          ></v-text-field>
+        </v-list-item>
+        <pager :items="bkkStops" :show-count="3">
+          <template v-slot:item="{ item }">
+            <stop-item :stop="item">
+              <v-btn
+                v-if="bkkFavouriteStops.find((s) => s.id === item.id)"
+                slot="action"
+                icon
+                @click="removeStop(item)"
+              >
+                <v-icon>mdi-bookmark</v-icon>
               </v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-card>
+              <v-btn v-else slot="action" icon @click="changeFavourite(item)">
+                <v-icon>mdi-bookmark-outline</v-icon>
+              </v-btn>
+            </stop-item>
+          </template>
+        </pager>
+      </v-list>
+    </v-container>
+
+    <!--v-form>
+      <v-container>
         <v-autocomplete
           v-model="stopToAdd"
           :disabled="bkkFavouriteStops.length >= 3"
-          :loading="bkkStopsLoading"
+          :loading="loading.bkkStops"
           :items="groupedStops"
           chips
           color="blue-grey lighten-2"
@@ -66,20 +111,22 @@
           </template>
           <template v-slot:append-outer>
             <v-btn icon :disabled="!stopToAdd" @click="addStop">
-              <v-icon>mdi-map-marker-plus</v-icon>
+              <v-icon>mdi-bookmark</v-icon>
             </v-btn>
           </template>
         </v-autocomplete>
       </v-container>
-    </v-form>
+    </v-form-->
   </div>
 </template>
 <script>
 import StoreMixin from "@/mixins/StoreMixin";
 import Vehicle from "./Vehicle.vue";
+import StopItem from "./StopItem.vue";
+import Pager from "./Pager.vue";
 export default {
   name: "BKKStopPicker",
-  components: { Vehicle },
+  components: { Vehicle, StopItem, Pager },
   mixins: [StoreMixin],
   data: () => ({ stopToAdd: null, query: null }),
   computed: {
@@ -116,9 +163,8 @@ export default {
   },
   watch: {
     query(query) {
-      console.log(query);
-      if (this.stopToAdd || this.bkkStopsLoading) return;
-      if (!query || query.length >= 3) this.fetchBkkCloseStops(query || null);
+      if (this.loading.bkkStops) return;
+      if (query && query.length >= 4) this.fetchBkkStops(query);
     },
   },
   methods: {

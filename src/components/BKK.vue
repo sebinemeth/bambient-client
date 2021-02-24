@@ -5,7 +5,7 @@
       :key="key"
       elevation="2"
       class="station pb-3"
-      :loading="bkkDeparturesLoading"
+      :loading="loading.bkkDepartures"
     >
       <v-card-title>{{ station[0].stop.name }}</v-card-title>
       <v-card
@@ -29,7 +29,7 @@
         icon
         x-small
         class="mr-2"
-        :loading="bkkDeparturesLoading"
+        :loading="loading.bkkDepartures"
         @click="fetchBkkDepartures"
       >
         <v-icon>mdi-refresh</v-icon>
