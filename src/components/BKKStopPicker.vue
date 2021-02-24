@@ -36,10 +36,10 @@
         </stop-item>
         <v-list-item>
           <v-text-field
+            v-model="query"
             prepend-inner-icon="mdi-magnify"
             :placeholder="'Search by name'"
             clearable
-            v-model="query"
             :hint="'Type at least 4 characters to search'"
           ></v-text-field>
         </v-list-item>
@@ -70,7 +70,7 @@ import StopItem from "./StopItem.vue";
 import Pager from "./Pager.vue";
 export default {
   name: "BKKStopPicker",
-  components: { Vehicle, StopItem, Pager },
+  components: { StopItem, Pager },
   mixins: [StoreMixin],
   data: () => ({ stopToAdd: null, query: null }),
   computed: {
