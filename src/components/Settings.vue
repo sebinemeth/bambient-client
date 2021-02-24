@@ -13,6 +13,20 @@
       </v-toolbar-items>
     </v-toolbar>
     <v-list subheader>
+      <v-list-item>
+        <v-list-item-avatar color="grey">
+          <v-img src="logo.svg"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>bAmbient</v-list-item-title>
+          <v-list-item-subtitle>Budapest Ambient Display</v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn icon @click="open('https://github.com/sebinemeth/bambient-client')">
+            <v-icon>mdi-github</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
       <v-subheader>{{ $t("general") }}</v-subheader>
       <v-list-item>
         <v-list-item-content>
@@ -144,6 +158,9 @@ export default {
   methods: {
     close() {
       this.$emit("close");
+    },
+    open(url) {
+      window.open(url);
     },
     resetSettings() {
       window.localStorage.clear();
