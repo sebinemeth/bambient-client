@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main dark>
-      <div class="d-flex appbar">
+      <div class="d-flex appbar align-center">
         <!--fullscreen-->
         <v-dialog v-model="dialog" max-width="600">
           <template v-slot:activator="{ on, attrs }">
@@ -11,6 +11,11 @@
           </template>
           <settings @close="dialog = false" />
         </v-dialog>
+        <v-spacer></v-spacer>
+        <div class="error--text">
+          <v-icon color="error" size="small">mdi-alert</v-icon>
+          {{ $t("under-construction") }}
+        </div>
         <v-spacer></v-spacer>
         <v-btn icon class="ma-3" @click.stop="toggleFullScreen">
           <v-icon v-if="fullScreen">mdi-fullscreen-exit</v-icon>
@@ -37,7 +42,7 @@ export default {
     height() {
       this.forceUpdate;
       return window.innerHeight + "px";
-    },
+    }
   },
 
   created() {
@@ -76,8 +81,8 @@ export default {
       } else {
         cancelFullScreen.call(doc);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -93,7 +98,8 @@ export default {
   background: black !important;
 }
 
-.v-pagination__navigation, .v-pagination__item:not(.v-pagination__item--active) {
+.v-pagination__navigation,
+.v-pagination__item:not(.v-pagination__item--active) {
   box-shadow: none !important;
 }
 
