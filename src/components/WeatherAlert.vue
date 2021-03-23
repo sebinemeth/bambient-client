@@ -14,8 +14,8 @@
         {{ alert.description }}
       </v-card-text>
       <v-card-text>
-        From {{ new Date(alert.start * 1000).toLocaleString() }} to
-        {{ new Date(alert.end * 1000).toLocaleString() }}
+        From {{ new Date(alert.start * 1000).toLocaleString($i18n.locale) }} to
+        {{ new Date(alert.end * 1000).toLocaleString($i18n.locale) }}
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -45,8 +45,8 @@
           {{ alert.description }}
         </small>
         <br />
-        <small>From {{ new Date(alert.start * 1000).toLocaleString() }} to
-          {{ new Date(alert.end * 1000).toLocaleString() }}</small>
+        <small>From {{ new Date(alert.start * 1000).toLocaleString($i18n.locale) }} to
+          {{ new Date(alert.end * 1000).toLocaleString($i18n.locale) }}</small>
       </div>
     </v-expand-transition>
   </v-alert>

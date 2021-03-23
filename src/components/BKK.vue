@@ -1,46 +1,47 @@
 <template>
-  <div class="bkk fill-height">
+  <div class="bkk">
     <v-card
       v-for="(station, key) in departuresByStation"
       :key="key"
       elevation="2"
-      class="pa-3 mb-3"
+      class="station pb-3"
+      :loading="loading.bkkDepartures"
     >
       <v-card-title>{{ station[0].stop.name }}</v-card-title>
       <v-card
         v-for="stop in station"
         :key="stop.stopId"
-        class="stop"
         color="black"
+        class="stop mx-3"
       >
         <v-card-text>
-          <div
+          <stop-time
             v-for="(stopTime, i) in stop.stopTimes.slice(0, 5)"
             :key="i"
-            class="stopTime d-flex align-center"
-          >
-            <vehicle class="mr-2" :color="stopTime.trip.route.style.color">
-              {{ stopTime.trip.route.shortName }}
-            </vehicle>{{ stopTime.trip.tripHeadsign }}
-            <span
-              class="ml-auto"
-              :class="{ 'success--text': !!stopTime.predictedDepartureTime }"
-            >{{
-              new Date(
-                (stopTime.predictedDepartureTime || stopTime.departureTime) *
-                  1000
-              ).toLocaleTimeString()
-            }}</span>
-          </div>
+            :stop-time="stopTime"
+          />
         </v-card-text>
       </v-card>
     </v-card>
 
-    <div class="d-flex justify-end">
-      <v-dialog v-model="stopDialog">
+    <v-card-actions>
+      <v-btn
+        icon
+        x-small
+        class="mr-2"
+        :loading="loading.bkkDepartures"
+        @click="fetchBkkDepartures"
+      >
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+      <small>
+        {{ refreshTimePassed }}
+      </small>
+      <v-spacer></v-spacer>
+      <v-dialog v-model="stopDialog" max-width="600">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
-            Edit stops
+            {{ $t("edit-stops") }}
           </v-btn>
         </template>
         <v-card>
@@ -48,69 +49,32 @@
             <v-btn icon dark @click="stopDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>Edit stops</v-toolbar-title>
+            <v-toolbar-title>{{ $t("edit-stops") }}</v-toolbar-title>
           </v-toolbar>
-          <v-form>
-            <v-text-field
-              v-model="query"
-              label="Search stops"
-              solo
-              clearable
-              prepend-icon="mdi-search"
-              @input="search"
-            >
-            </v-text-field>
-          </v-form>
-          <v-card
-            v-for="(stop, i) in bkkCloseStops"
-            :key="i"
-            class="ma-3"
-            elevation="2"
-          >
-            <v-list>
-              <v-list-item>
-                <v-list-item-title class="font-alata">
-                  {{ stop.name }}
-                </v-list-item-title>
-                <v-list-item-action>
-                  <v-btn icon small @click="changeFavourite(stop)">
-                    <v-icon
-                      v-if="bkkFavouriteStops.find((s) => s.id === stop.id)"
-                    >
-                      mdi-star
-                    </v-icon>
-                    <v-icon v-else>mdi-star-outline</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-              <v-list-item>
-                <v-slide-group show-arrows>
-                  <v-slide-item v-for="route in stop.routes" :key="route.id">
-                    <vehicle class="mx-1 mb-2" :color="route.style.color">
-                      {{ route.shortName }}
-                    </vehicle>
-                  </v-slide-item>
-                </v-slide-group>
-              </v-list-item>
-            </v-list>
-          </v-card>
+          <BKKStopPicker />
         </v-card>
       </v-dialog>
-    </div>
+    </v-card-actions>
   </div>
 </template>
 
 <script>
 import StoreMixin from "@/mixins/StoreMixin";
 import NowMixin from "@/mixins/NowMixin";
-import Vehicle from "./Vehicle.vue";
+import StopTime from "./StopTime.vue";
+import BKKStopPicker from "./BKKStopPicker.vue";
 
 export default {
   name: "BKK",
-  components: { Vehicle },
+  components: { StopTime, BKKStopPicker },
   mixins: [StoreMixin, NowMixin],
   props: {},
-  data: () => ({ query: null, stopDialog: false }),
+  data: () => ({
+    query: null,
+    stopDialog: false,
+    refreshTimeout: null,
+    nextRefresh: new Date(),
+  }),
   computed: {
     stops() {
       return this.bkkFavouriteStops.length
@@ -125,34 +89,42 @@ export default {
         return accumulator;
       }, {});
     },
-  },
-  mounted() {
-    this.search();
-  },
-  methods: {
-    async search(query) {
-      if (!query) {
-        await this.fetchBkkCloseStops();
-        await this.fetchBkkDepartures();
-        return;
-      }
-      if (query.length >= 3) {
-        await this.fetchBkkCloseStops(query);
-        await this.fetchBkkDepartures();
-      }
+    refreshTimePassed() {
+      if (!this.bkkDeparturesRefreshed) return "";
+      const diffMinutes =
+        (this.now - this.bkkDeparturesRefreshed.getTime()) / 1000 / 60;
+      return diffMinutes < 1
+        ? this.$t("just-now")
+        : this.$t("n-minutes-ago", { n: Math.round(diffMinutes) });
     },
-    changeFavourite(id) {
-      this.setBkkFavouriteStop(id);
+  },
+  watch: {
+    bkkFavouriteStops() {
       this.fetchBkkDepartures();
     },
+    bkkDepartures() {
+      if (this.refreshTimeout) window.clearTimeout(this.refreshTimeout);
+      console.log(this.bkkNextRefresh);
+      this.nextRefresh = new Date(Date.now() + Math.round(this.bkkNextRefresh));
+      this.refreshTimeout = window.setTimeout(
+        this.fetchBkkDepartures,
+        this.bkkNextRefresh
+      );
+    },
   },
+  async mounted() {
+    if (!this.stops.length) await this.fetchBkkCloseStops();
+    this.fetchBkkDepartures();
+  },
+  methods: {},
 };
 </script>
 <style lang="scss" scoped>
-.stopTime + .stopTime {
-  margin-top: 16px;
-}
-.stop + .stop {
-  margin-top: 16px;
+.station,
+.stop,
+.stopTime {
+  & + & {
+    margin-top: 16px;
+  }
 }
 </style>

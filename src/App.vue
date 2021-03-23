@@ -82,12 +82,8 @@ export default {
 </script>
 
 <style>
-html {
-  overflow: hidden;
-}
-
 .appbar {
-  position: absolute;
+  position: fixed;
   z-index: 15;
   width: 100%;
   background: linear-gradient(to bottom, black, transparent);
@@ -96,6 +92,11 @@ html {
 .theme--dark.v-application {
   background: black !important;
 }
+
+.v-pagination__navigation, .v-pagination__item:not(.v-pagination__item--active) {
+  box-shadow: none !important;
+}
+
 .font-lato {
   font-family: "Lato", sans-serif !important;
 }

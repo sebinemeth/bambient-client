@@ -1,4 +1,15 @@
 {
   "locale-en": "English",
-  "locale-hu": "Hungarian"
+  "locale-hu": "Hungarian",
+  "settings": "Settings",
+  "reset": "Reset",
+  "general": "General",
+  "language": "Language",
+  "date-and-time": "Date & Time",
+  "weather": "Weather",
+  "n-minutes-ago": "{n} minutes ago",
+  "now": "now",
+  "forecast": "Forecast",
+  "just-now": "just now",
+  "edit-stops": "Edit stops"
 }

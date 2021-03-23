@@ -38,13 +38,19 @@
       <template v-else>
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Loading weather...</v-list-item-title>
+            <v-list-item-title></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
     </v-card>
     <v-card-actions v-if="weatherData.current">
-      <v-btn icon x-small class="mr-2" @click="fetchWeather">
+      <v-btn
+        icon
+        x-small
+        class="mr-2"
+        :loading="weatherData.loading"
+        @click="fetchWeather"
+      >
         <v-icon>mdi-refresh</v-icon>
       </v-btn>
       <small>
@@ -55,7 +61,7 @@
       <v-dialog v-model="forecastDialog">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text small v-bind="attrs" v-on="on">
-            Forecast
+            {{ $t('forecast') }}
           </v-btn>
         </template>
         <v-card>
@@ -63,7 +69,7 @@
             <v-btn icon dark @click="forecastDialog = false">
               <v-icon>mdi-close</v-icon>
             </v-btn>
-            <v-toolbar-title>Forecast</v-toolbar-title>
+            <v-toolbar-title>{{ $t('forecast') }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-toolbar-items>
               <v-btn icon :loading="weatherData.loading" @click="fetchWeather">
@@ -103,13 +109,13 @@ export default {
       const diffMinutes =
         (this.now - this.weatherData.refreshed.getTime()) / 1000 / 60;
       return diffMinutes < 1
-        ? "just now"
-        : Math.round(diffMinutes) + " mins ago";
+        ? this.$t('just-now')
+        : this.$t("n-minutes-ago", { n: Math.round(diffMinutes) });
     },
     dailyData() {
       return {
         labels: this.weatherData.daily.map((entry) =>
-          new Date(entry.dt * 1000).toLocaleDateString()
+          new Date(entry.dt * 1000).toLocaleDateString(this.$i18n.locale)
         ),
         datasets: [
           {
@@ -136,8 +142,14 @@ export default {
         ],
       };
     },
+    locale() {
+      return this.$i18n.locale;
+    },
   },
   watch: {
+    locale(oldVal, newVal) {
+      if (oldVal !== newVal) this.setInterval(this.weatherInterval);
+    },
     weatherInterval(value) {
       this.setInterval(value);
     },

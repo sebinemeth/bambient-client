@@ -1,6 +1,6 @@
 <template>
-  <div class="fill-height pa-1">
-    <v-row class="fill-height">
+  <div class="pa-1">
+    <v-row class="main-row">
       <v-col cols="12" md="6" class="d-flex justify-center align-center">
         <div class="ma-5" style="width: 100%">
           <date-time />
@@ -27,4 +27,8 @@ export default {
   data: () => ({}),
 };
 </script>
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.main-row {
+  min-height: 100vh;
+}
+</style>

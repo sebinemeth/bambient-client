@@ -4,19 +4,33 @@
       <v-btn icon dark @click="close">
         <v-icon>mdi-close</v-icon>
       </v-btn>
-      <v-toolbar-title>Settings</v-toolbar-title>
+      <v-toolbar-title>{{ $t("settings") }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn dark text @click="resetSettings">
-          Reset
+          {{ $t("reset") }}
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-list subheader>
-      <v-subheader>General</v-subheader>
+      <v-list-item>
+        <v-list-item-avatar color="grey">
+          <v-img src="logo.svg"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>bAmbient</v-list-item-title>
+          <v-list-item-subtitle>Budapest Ambient Display</v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn icon @click="open('https://github.com/sebinemeth/bambient-client')">
+            <v-icon>mdi-github</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+      <v-subheader>{{ $t("general") }}</v-subheader>
       <v-list-item>
         <v-list-item-content>
-          <v-list-item-title>Language</v-list-item-title>
+          <v-list-item-title>{{ $t("language") }}</v-list-item-title>
           <v-list-item-subtitle>
             Change the language of the app
           </v-list-item-subtitle>
@@ -48,9 +62,13 @@
                   text: $t(`locale-${locale}`),
                 }))"
                 :key="item.locale"
-                @click="$i18n.locale = item.locale"
+                @click="changeLocale(item.locale)"
               >
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
+                <v-list-item-title
+                  :class="{ 'primary--text': item.locale === $i18n.locale }"
+                >
+                  {{ item.text }}
+                </v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -83,7 +101,7 @@
     </v-list>
     <v-divider></v-divider>
     <v-list subheader>
-      <v-subheader>Date & Time</v-subheader>
+      <v-subheader>{{ $t("date-and-time") }}</v-subheader>
       <v-list-item @click="setShowSeconds(!showSeconds)">
         <v-list-item-content>
           <v-list-item-title>Show seconds</v-list-item-title>
@@ -98,7 +116,7 @@
     </v-list>
     <v-divider></v-divider>
     <v-list subheader>
-      <v-subheader>Weather</v-subheader>
+      <v-subheader>{{ $t("weather") }}</v-subheader>
       <v-list-item>
         <v-slider
           label="Refresh interval"
@@ -141,12 +159,19 @@ export default {
     close() {
       this.$emit("close");
     },
+    open(url) {
+      window.open(url);
+    },
     resetSettings() {
       window.localStorage.clear();
       this.$store.commit("resetState");
     },
     reload() {
       window.location.reload(true);
+    },
+    changeLocale(locale) {
+      this.$i18n.locale = locale;
+      window.localStorage.setItem("locale", locale);
     },
   },
 };
