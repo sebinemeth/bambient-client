@@ -9,7 +9,8 @@ Vue.use(VueRouter)
     path: '/',
     name: 'Home',
     component: Home
-  }/*,
+  }
+  /*,
   {
     path: '/about',
     name: 'About',

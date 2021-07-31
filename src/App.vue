@@ -11,91 +11,92 @@
     </div>
 
     <v-navigation-drawer v-model="drawer" app absolute temporary>
-      <v-list-item>
+      <v-list-item class="pb-3">
         <v-list-item-content>
-          <v-list-item-title class="title">bAmbient</v-list-item-title>
+          <v-list-item-title class="apptitle">bAmbient</v-list-item-title>
           <v-list-item-subtitle>A Budapest ambient display</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
       <v-list dense>
-        <v-list-group value="true">
-          <template v-slot:activator>
-            <v-list-item-title>General settings</v-list-item-title>
-          </template>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>NoSleep</v-list-item-title>
-                <v-switch v-model="config.enableNoSleep" inset></v-switch>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
+        <v-divider></v-divider>
+        <v-subheader class="pa-4">General settings</v-subheader>
+        <v-list-item>
+          <v-switch v-model="config.enableNoSleep" inset label="NoSleep" hide-details class="mb-6"></v-switch>
+        </v-list-item>
+        <v-divider></v-divider>
 
-        <v-list-group>
-          <template v-slot:activator>
-            <v-list-item-title>Time and date settings</v-list-item-title>
-          </template>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Show seconds</v-list-item-title>
-                <v-switch v-model="config.showSecs" inset></v-switch>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Show date</v-list-item-title>
-                <v-switch v-model="config.showDate" inset></v-switch>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Date format</v-list-item-title>
-                <v-select v-model="config.dateFormat" dense></v-select>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
+        <v-divider></v-divider>
+        <v-subheader class="pa-4">Time and date settings</v-subheader>
+        <v-list-item>
+          <v-switch v-model="config.showSecs" inset label="Show seconds" hide-details></v-switch>
+        </v-list-item>
+        <v-list-item>
+          <v-switch v-model="config.showDate" inset label="Show date" hide-details class="mb-6"></v-switch>
+        </v-list-item>
+        <v-list-item v-if="config.showDate">
+          <v-select
+            v-model="config.dateFormat"
+            dense
+            :items="dateFormats"
+            label="Date format"
+            item-text="sample"
+            return-object
+          ></v-select>
+        </v-list-item>
 
-        <v-list-group>
-          <template v-slot:activator>
-            <v-list-item-title>Refresh settings</v-list-item-title>
-          </template>
-          <v-list-item>
-            <v-list-item-content>
-              <div class="d-flex">
-                <v-list-item-title>Location</v-list-item-title>
-                <v-text-field type="number" suffix="s" v-model="config.refreshLocation"></v-text-field>
-              </div>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list-group>
-
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
+        <v-divider></v-divider>
+        <v-subheader class="pa-4">Refresh settings (refresh every n minutes)</v-subheader>
+        <v-list-item>
+          <v-slider
+            v-model="config.locationRefresh"
+            class="align-center"
+            :min="15"
+            :max="60*3"
+            step="1"
+            label="Location"
+            thumb-label
+            hide-details
+          ></v-slider>
+        </v-list-item>
+        <v-list-item>
+          <v-slider
+            v-model="config.weatherRefresh"
+            class="align-center"
+            :min="10"
+            :max="60"
+            step="1"
+            label="Weather"
+            thumb-label
+            hide-details
+          ></v-slider>
+        </v-list-item>
+        <v-list-item>
+          <v-range-slider
+            v-model="config.bkkRefresh"
+            class="align-center"
+            :min="0"
+            :max="30"
+            label="Commute"
+            thumb-label
+            hide-details
+          ></v-range-slider>
+        </v-list-item>
+        <v-list-item>
+          <v-btn small color="primary" block @click="refreshConfig">Save and refresh</v-btn>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-content dark>
-      <router-view :config="config" />
+      <router-view :config="config" :dt="dt" />
     </v-content>
   </v-app>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld';
+/* eslint-disable */
 
 export default {
   name: "App",
@@ -103,27 +104,72 @@ export default {
   components: {},
 
   data: () => ({
-    drawer: true,
+    drawer: false,
+    dateFormats: [
+      {
+        options: {
+          month: "long",
+          day: "numeric",
+          weekday: "short",
+        },
+      },
+      {
+        options: {
+          month: "long",
+          day: "numeric",
+        },
+      },
+      {
+        options: {
+          month: "short",
+          day: "numeric",
+          weekday: "short",
+        },
+      },
+      {
+        options: {
+          month: "short",
+          day: "numeric",
+          weekday: "long",
+        },
+      },
+    ],
     config: {
       enableNosleep: false,
       showSecs: false,
       showDate: true,
-      dateFormat: null,
-      refreshLocation: 15 * 60,
-      refreshBKK: [3, 5 * 60],
-      refreshWeather: 15 * 60
-    }
+      dateFormat: {},
+
+      locationRefresh: 30, // minutes
+      bkkRefresh: [0, 10], // minutes
+      weatherRefresh: 10, // minutes
+
+      locationInterval: null,
+      dateTimeInterval: null,
+      weatherInterval: null,
+      bkkTimeout: null,
+
+      location: null,
+    },
+    dt: null,
   }),
 
   created() {
     this.$vuetify.theme.dark = true;
-  },
-
-  mounted: () => {
-    //this.collapseAppbar = false
+    for (var i = 0; i < this.dateFormats.length; i++)
+      this.dateFormats[i] = Object.assign(this.dateFormats[i], {
+        sample: Intl.DateTimeFormat(
+          "hu-HU",
+          this.dateFormats[i].options
+        ).format(new Date(0)),
+      });
+    this.config.dateFormat = this.dateFormats[0];
   },
 
   methods: {
+    refreshConfig() {
+      this.dt = new Date().getTime()
+    },
     toggleFullScreen() {
       var doc = window.document;
       var docEl = doc.documentElement;
@@ -149,8 +195,8 @@ export default {
       } else {
         cancelFullScreen.call(doc);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -159,13 +205,18 @@ html {
   overflow: hidden;
 }
 
+.apptitle {
+  font-family: "Alata", sans-serif !important;
+  font-size: 1.5rem !important;
+}
+
 .theme--dark.v-application {
-  background: black!important;
+  background: black !important;
 }
 .font-lato {
-  font-family: 'Lato', sans-serif!important;
+  font-family: "Lato", sans-serif !important;
 }
 .font-alata {
-  font-family: "Alata", sans-serif!important;
+  font-family: "Alata", sans-serif !important;
 }
 </style>
